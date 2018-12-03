@@ -7,7 +7,7 @@
  * L := [0-9]+ | [a-z]
  */
 public class SimpleExpressionParser implements ExpressionParser {
-	private static final String ALL_Ls = "0123456789abcdefghijklmnopqrstuvwxyz";
+	private static final String ALL_CHARS = "abcdefghijklmnopqrstuvwxyz";
 	
 	
 	/*
@@ -39,10 +39,35 @@ public class SimpleExpressionParser implements ExpressionParser {
 	}
 	
 	private boolean validateExpression(String str) {
-		if (ALL_Ls.contains(str)) {
+		try { 
+			Integer.parseInt(str);
+			return true;
+		} catch (Exception e) {}
+		if (ALL_CHARS.contains(str)) {
 			return true;
 		}
-		
+		else if (validateHelper('+', str)) {
+			return true;
+		}
+		else if (validateHelper('*', str)) {
+			return true;
+		}
+		else if (str.charAt(0) == '(' && 
+				str.charAt(str.length()-1) == ')' &&
+				validateExpression(str.substring(1, str.length()-1))){
+			return true;
+		}
+		return false;
+	}
+
+	private boolean validateHelper(char c, String str) {
+		for (int i = 1; i < str.length() - 1; i++) {
+			if (str.charAt(i) == c &&
+				validateExpression(str.substring(0, i)) &&
+				validateExpression(str.substring(i+1))) {
+				return true;
+			}
+		}
 		return false;
 	}
 }
