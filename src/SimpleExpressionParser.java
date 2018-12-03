@@ -25,24 +25,26 @@ public class SimpleExpressionParser implements ExpressionParser {
 			// If we couldn't parse the string, then raise an error
 			throw new ExpressionParseException("Cannot parse expression: " + str);
 		}
-
+		
 		// Flatten the expression before returning
 		expression.flatten();
 		return expression;
 	}
 	
 	protected Expression parseExpression (String str) {
-		Expression expression;
+		Expression expression = new ExpressionImpl();
 		if (!validateExpression(str)) return null;
 		// TODO implement me
-		return null;
+		return expression;
 	}	
 	
 	private boolean validateExpression(String str) {
-		try { 
-			Integer.parseInt(str);
-			return true;
-		} catch (Exception e) {}
+		if (!str.equals("")) {
+			try { 
+				Integer.parseInt(str);
+				return true;
+			} catch (Exception e) {}
+		}
 		if (ALL_CHARS.contains(str)) {
 			return true;
 		}

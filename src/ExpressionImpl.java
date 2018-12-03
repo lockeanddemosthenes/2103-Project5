@@ -36,7 +36,6 @@ public class ExpressionImpl implements Expression, CompoundExpression {
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override

@@ -114,7 +114,7 @@ public class ExpressionParserPartialTester {
 	@Test
 	public void testValidateExpression2() {
 		final SimpleExpressionParser parser = new SimpleExpressionParser();
-		assertTrue(!parser.validateTest("1+2+"));
+		assertTrue(!parser.validateTest("()()"));
 	}
 
 	@Test
