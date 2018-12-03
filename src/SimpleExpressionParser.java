@@ -7,6 +7,9 @@
  * L := [0-9]+ | [a-z]
  */
 public class SimpleExpressionParser implements ExpressionParser {
+	private static final String ALL_Ls = "0123456789abcdefghijklmnopqrstuvwxyz";
+	
+	
 	/*
 	 * Attempts to create an expression tree -- flattened as much as possible -- from the specified String.
          * Throws a ExpressionParseException if the specified string cannot be parsed.
@@ -30,8 +33,16 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	protected Expression parseExpression (String str) {
 		Expression expression;
-		
+		if (!validateExpression(str)) return null;
 		// TODO implement me
 		return null;
+	}
+	
+	private boolean validateExpression(String str) {
+		if (ALL_Ls.contains(str)) {
+			return true;
+		}
+		
+		return false;
 	}
 }
