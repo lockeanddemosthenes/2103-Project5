@@ -36,7 +36,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 		if (!validateExpression(str)) return null;
 		// TODO implement me
 		return null;
-	}
+	}	
 	
 	private boolean validateExpression(String str) {
 		try { 
@@ -69,5 +69,9 @@ public class SimpleExpressionParser implements ExpressionParser {
 			}
 		}
 		return false;
+	}
+	
+	public boolean validateTest(String str) {
+		return validateExpression(str);
 	}
 }

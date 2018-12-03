@@ -103,4 +103,31 @@ public class ExpressionParserPartialTester {
 		final String expressionStr = "()()";
 		_parser.parse(expressionStr, false);
 	}
+	
+	
+	@Test
+	public void testValidateExpression1() {
+		final SimpleExpressionParser parser = new SimpleExpressionParser();
+		assertTrue(parser.validateTest("1+a*(1+2)"));
+	}
+	
+	@Test
+	public void testValidateExpression2() {
+		final SimpleExpressionParser parser = new SimpleExpressionParser();
+		assertTrue(!parser.validateTest("1+2+"));
+	}
+
+	@Test
+	public void testValidateExpression3() {
+		final SimpleExpressionParser parser = new SimpleExpressionParser();
+		assertTrue(parser.validateTest("(((((3)))))"));
+	}
+	
+	@Test
+	public void testValidateExpression4() {
+		final SimpleExpressionParser parser = new SimpleExpressionParser();
+		assertTrue(!parser.validateTest("(((((3))))"));
+	}
+
+	
 }
