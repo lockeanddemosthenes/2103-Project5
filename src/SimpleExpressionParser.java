@@ -26,6 +26,12 @@ public class SimpleExpressionParser implements ExpressionParser {
 			throw new ExpressionParseException("Cannot parse expression: " + str);
 		}
 		
+		try {
+			return new LiteralExpression(Integer.parseInt(str));
+		} catch (Exception e) {}
+		
+		
+		
 		// Flatten the expression before returning
 		expression.flatten();
 		return expression;
@@ -34,7 +40,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	protected Expression parseExpression (String str) {
 		Expression expression = new ExpressionImpl();
 		if (!validateExpression(str)) return null;
-		// TODO implement me
+		
 		return expression;
 	}	
 	
