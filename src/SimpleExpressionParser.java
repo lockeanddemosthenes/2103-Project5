@@ -45,6 +45,8 @@ public class SimpleExpressionParser implements ExpressionParser {
 				return true;
 			} catch (Exception e) {}
 		}
+		else return false;
+		
 		if (ALL_CHARS.contains(str)) {
 			return true;
 		}
