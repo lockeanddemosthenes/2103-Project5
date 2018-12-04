@@ -23,8 +23,11 @@ public class ExpressionImpl implements Expression, CompoundExpression {
 
 	@Override
 	public Expression deepCopy() {
-		// TODO Auto-generated method stub
-		return null;
+		final ExpressionImpl copy = new ExpressionImpl();
+		 for (Expression child : _children) {
+			 copy._children.add((Expression) child.deepCopy()); // recurse
+		 }
+		 return copy;
 	}
 
 	@Override
