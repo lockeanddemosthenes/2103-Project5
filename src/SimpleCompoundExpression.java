@@ -25,11 +25,8 @@ public class SimpleCompoundExpression implements CompoundExpression {
 
 	@Override
 	public void flatten() {
-		 for (Expression child : _children) {
-			 if(child == _parent && ()) {
-				 
-			 }
-		 }
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
