@@ -80,7 +80,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 		}
 		else return false;
 		
-		if (ALL_CHARS.contains(str)) {
+		if (ALL_CHARS.contains(str)&&str.length()==1) {
 			return true;
 		}
 		else if (validateHelper('+', str)) {

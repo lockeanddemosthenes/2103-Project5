@@ -1,5 +1,5 @@
 
-public class LiteralExpression implements Expression {
+public class LiteralExpression extends SimpleExpression{
 	String sValue;
 	Integer iValue;
 	String _name;
@@ -26,7 +26,6 @@ public class LiteralExpression implements Expression {
 	@Override
 	public void flatten() {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
