@@ -30,6 +30,10 @@ public class SimpleCompoundExpression implements CompoundExpression {
 		 }
 		 return copy;
 	}
+	
+	public String getName() {
+		return _name;
+	}
 
 	@Override
 	public void flatten() {

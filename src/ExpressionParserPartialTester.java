@@ -108,7 +108,7 @@ public class ExpressionParserPartialTester {
 	@Test
 	public void testValidateExpression1() {
 		final SimpleExpressionParser parser = new SimpleExpressionParser();
-		assertTrue(parser.validateTest("1+a*(1+2)"));
+		assertTrue(parser.validateTest("(x+(x)+(x+x)+x)"));
 	}
 	
 	@Test

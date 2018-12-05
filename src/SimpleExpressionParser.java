@@ -63,10 +63,6 @@ public class SimpleExpressionParser implements ExpressionParser {
 		if (multEx != null) {
 			return multEx;
 		}
-		
-		
-		
-		
 		return expression;
 	}	
 	
@@ -144,17 +140,13 @@ public class SimpleExpressionParser implements ExpressionParser {
 		if (str.contains(""+op)) {
 			int start = 0;
 			String temp = str;
-			System.out.println("test paren "+str);
-			System.out.println("op index " + str.indexOf(op));
+			
 			if (str.contains("(")&&(str.indexOf('(') < str.indexOf(op))) {
 				start = str.indexOf(')')+1;
-				System.out.println("hit " + start);
 				temp = str.substring(start);
 			}
 			String first = str.substring(0 , temp.indexOf(op)+start);
-			System.out.println("first " + first);
 			String rest = str.substring(temp.indexOf(op)+1+start, str.length());
-			System.out.println("rest " + rest);
 			
 			CompoundExpression out = new SimpleCompoundExpression(""+op);
 			Expression firstEx = parseExpression(first);
@@ -162,9 +154,10 @@ public class SimpleExpressionParser implements ExpressionParser {
 			
 			out.addSubexpression(firstEx);
 			out.addSubexpression(restEx);
-
-			firstEx.setParent(out);
-			restEx.setParent(out);
+			try {
+				firstEx.setParent(out);
+				restEx.setParent(out);
+			} catch (Exception e) { return null; }
 			return out;
 		}
 		else return null;
