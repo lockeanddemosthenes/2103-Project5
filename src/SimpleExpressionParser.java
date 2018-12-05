@@ -39,7 +39,6 @@ public class SimpleExpressionParser implements ExpressionParser {
 	protected Expression parseExpression (String str) {
 		Expression expression = null;
 		if (!validateExpression(str)) return null;
-		System.out.println("Index of paren" +str.indexOf('(') +"  "+str.indexOf(')'));
 		//literal cases
 		if (ALL_CHARS.contains(str) && str.length() == 1) {
 			return new LiteralExpression(str);
@@ -50,7 +49,6 @@ public class SimpleExpressionParser implements ExpressionParser {
 		//parenthetical case
 		
 		else if (isParenthetical(str)) {
-			System.out.println("here");
 			return handleParentheticalExpression(str.substring(1, str.length()-1));
 		}
 		
@@ -143,16 +141,14 @@ public class SimpleExpressionParser implements ExpressionParser {
 			int start = 0;
 			String temp = str;
 			int parensToClose = findAmountOfChar(str, op);
-			System.out.println("---------" +str);
+			
 			while ((temp.indexOf('(')<temp.indexOf(op))&&parensToClose>=0) {
 				start = temp.indexOf(')')+start+1;
 				temp = str.substring(start);
-				System.out.println(temp);
 				
 				parensToClose--;
 				
 			}
-			System.out.println(str);
 			String first = str.substring(0 , temp.indexOf(op)+start);
 			
 			String rest = str.substring(temp.indexOf(op)+1+start, str.length());
@@ -166,14 +162,14 @@ public class SimpleExpressionParser implements ExpressionParser {
 			try {
 				firstEx.setParent(out);
 				restEx.setParent(out);
-			} catch (Exception e) { System.out.println("FAIL"); return null; }
+			} catch (Exception e) { return null; }
 			return out;
 		}
 		else return null;
 	}
 	
 	private Expression handleParentheticalExpression(String str) {
-		CompoundExpression out = new ParentheticalExpression("()");
+		CompoundExpression out = new SimpleCompoundExpression("()");
 
 		Expression middle = parseExpression(str);
 		out.addSubexpression(middle);
@@ -191,7 +187,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	private boolean isParenthetical(String str) {
 		if (str.charAt(0) == '('&&str.charAt(str.length()-1) == ')') {
-			if (parseExpression(str.substring(1, str.length()-2))!=null){
+			if (parseExpression(str.substring(1, str.length()-1))!=null){
 				return true;
 			}else return false;
 		}else return false;

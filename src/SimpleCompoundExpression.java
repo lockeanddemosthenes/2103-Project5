@@ -37,13 +37,19 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 
 	@Override
 	public void flatten() {
-		 for (Expression child : _children) {
+		 for (int i=0; i<getChildren().size(); i++) {
+			 SimpleCompoundExpression child = (SimpleCompoundExpression) getChildren().get(i);
 			 child.flatten();
-			 if(((SimpleCompoundExpression) child).getName() == getName()) {
-				 
+			 if((child.getName().equals(this.getName()))) {
+				 for(int j=0; j<child.getChildren().size(); j++) {
+					 this.addSubexpression(child.getChildren().get(j));
+				 }
+				 getChildren().remove(child);
 			 }
 		 }
 	}
+	
+	
 	
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {

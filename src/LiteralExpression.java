@@ -17,7 +17,8 @@ public class LiteralExpression extends SimpleCompoundExpression{
 		stringBuilder.append(this.getName()+"\n");
 		
 	}
-
+	
+	
 	public LiteralExpression(String s) {
 		super(s);
 	}
