@@ -2,6 +2,8 @@
 public class LiteralExpression implements Expression {
 	String sValue;
 	Integer iValue;
+	String _name;
+	CompoundExpression _parent;
 
 	@Override
 	public CompoundExpression getParent() {
@@ -11,7 +13,7 @@ public class LiteralExpression implements Expression {
 
 	@Override
 	public void setParent(CompoundExpression parent) {
-		// TODO Auto-generated method stub
+		_parent = parent;
 		
 	}
 
@@ -29,15 +31,12 @@ public class LiteralExpression implements Expression {
 
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
-		// TODO Auto-generated method stub
+		Expression.indent(stringBuilder, indentLevel);
+		stringBuilder.append(_name+"\n");
 		
 	}
-	public LiteralExpression(Integer i) {
-		iValue = i;
-		sValue = null;
-	}
+
 	public LiteralExpression(String s) {
-		sValue = s;
-		iValue = null;
+		_name = s;
 	}
 }

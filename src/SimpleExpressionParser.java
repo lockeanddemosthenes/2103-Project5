@@ -26,12 +26,6 @@ public class SimpleExpressionParser implements ExpressionParser {
 			throw new ExpressionParseException("Cannot parse expression: " + str);
 		}
 		
-		try {
-			return new LiteralExpression(Integer.parseInt(str));
-		} catch (Exception e) {}
-		
-		
-		
 		// Flatten the expression before returning
 		expression.flatten();
 		return expression;
@@ -46,11 +40,17 @@ public class SimpleExpressionParser implements ExpressionParser {
 			return new LiteralExpression(str);
 		}
 		else if (isValidInteger(str)) {
-			return new LiteralExpression(Integer.parseInt(str));
+			return new LiteralExpression(str);
 		}
 		//parenthetical case
 		else if (str.charAt(0)=='('&&str.charAt(str.length()-1) == ')') {
 			return handleParentheticalExpression(str.substring(1, str.length()-1));
+		}
+		
+		//additive case
+		Expression addEx = splitAtSymbol('+', str);
+		if (addEx != null) {
+			return addEx;
 		}
 		
 		//multiplicative case
@@ -59,11 +59,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 			return multEx;
 		}
 		
-		//additive case
-		Expression addEx = splitAtSymbol('+', str);
-		if (addEx != null) {
-			return addEx;
-		}
+		
 		
 		
 		return expression;
@@ -132,7 +128,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 			String rest = str.substring(temp.indexOf(op)+1+start, str.length());
 			System.out.println("rest " + rest);
 			
-			CompoundExpression out = new SimpleCompoundExpression();
+			CompoundExpression out = new SimpleCompoundExpression(""+op);
 			Expression firstEx = parseExpression(first);
 			Expression restEx = parseExpression(rest);
 			
@@ -147,7 +143,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	}
 	
 	private Expression handleParentheticalExpression(String str) {
-		CompoundExpression out = new ParentheticalExpression();
+		CompoundExpression out = new ParentheticalExpression("()");
 
 		Expression middle = parseExpression(str);
 		out.addSubexpression(middle);

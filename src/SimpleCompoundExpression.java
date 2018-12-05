@@ -4,10 +4,12 @@ import java.util.List;
 public class SimpleCompoundExpression implements CompoundExpression {
 	private CompoundExpression _parent;
 	private List<Expression> _children;
+	private String _name;
  	
 	
-	public SimpleCompoundExpression() {
+	public SimpleCompoundExpression(String str) {
 		_children = new ArrayList<Expression>();
+		_name = str;
 	}
 	
 	@Override
@@ -22,7 +24,7 @@ public class SimpleCompoundExpression implements CompoundExpression {
 
 	@Override
 	public Expression deepCopy() {
-		SimpleCompoundExpression  copy = new SimpleCompoundExpression();
+		SimpleCompoundExpression  copy = new SimpleCompoundExpression(new String(_name));
 		 for (Expression child : _children) {
 			 copy._children.add((Expression) child.deepCopy()); // recurse
 		 }
@@ -40,20 +42,11 @@ public class SimpleCompoundExpression implements CompoundExpression {
 	
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
-		String sym = "";
-		if (this.getClass() == AdditiveExpression.class) {
-			sym = "+";
+		Expression.indent(stringBuilder, indentLevel);
+		stringBuilder.append(_name+"\n");
+		for (Expression child : _children) {
+			stringBuilder.append(child.convertToString(indentLevel+1));
 		}
-		else if (this.getClass() == MultiplicativeExpression.class){
-			sym = "*";
-		}
-		else if (this.getClass() == ParentheticalExpression.class) {
-			sym = "()";
-		}
-		else {
-			
-		}
-		
 	}
 
 	@Override
