@@ -39,7 +39,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	protected Expression parseExpression (String str) {
 		Expression expression = null;
 		if (!validateExpression(str)) return null;
-		
+		System.out.println("Index of paren" +str.indexOf('(') +"  "+str.indexOf(')'));
 		//literal cases
 		if (ALL_CHARS.contains(str) && str.length() == 1) {
 			return new LiteralExpression(str);
@@ -48,7 +48,9 @@ public class SimpleExpressionParser implements ExpressionParser {
 			return new LiteralExpression(str);
 		}
 		//parenthetical case
-		else if (str.charAt(0)=='('&&str.charAt(str.length()-1) == ')') {
+		
+		else if (isParenthetical(str)) {
+			System.out.println("here");
 			return handleParentheticalExpression(str.substring(1, str.length()-1));
 		}
 		
@@ -140,12 +142,19 @@ public class SimpleExpressionParser implements ExpressionParser {
 		if (str.contains(""+op)) {
 			int start = 0;
 			String temp = str;
-			
-			if (str.contains("(")&&(str.indexOf('(') < str.indexOf(op))) {
-				start = str.indexOf(')')+1;
+			int parensToClose = findAmountOfChar(str, op);
+			System.out.println("---------" +str);
+			while ((temp.indexOf('(')<temp.indexOf(op))&&parensToClose>=0) {
+				start = temp.indexOf(')')+start+1;
 				temp = str.substring(start);
+				System.out.println(temp);
+				
+				parensToClose--;
+				
 			}
+			System.out.println(str);
 			String first = str.substring(0 , temp.indexOf(op)+start);
+			
 			String rest = str.substring(temp.indexOf(op)+1+start, str.length());
 			
 			CompoundExpression out = new SimpleCompoundExpression(""+op);
@@ -157,7 +166,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 			try {
 				firstEx.setParent(out);
 				restEx.setParent(out);
-			} catch (Exception e) { return null; }
+			} catch (Exception e) { System.out.println("FAIL"); return null; }
 			return out;
 		}
 		else return null;
@@ -170,6 +179,22 @@ public class SimpleExpressionParser implements ExpressionParser {
 		out.addSubexpression(middle);
 		middle.setParent(out);
 		return out;
+	}
+	
+	private int findAmountOfChar(String str, char c) {
+		int out = 0;
+		for (int i=0; i<str.length(); i++) {
+			if (str.charAt(i)==c) out++;
+		}
+		return out;
+	}
+	
+	private boolean isParenthetical(String str) {
+		if (str.charAt(0) == '('&&str.charAt(str.length()-1) == ')') {
+			if (parseExpression(str.substring(1, str.length()-2))!=null){
+				return true;
+			}else return false;
+		}else return false;
 	}
 	
 	public boolean validateTest(String str) {
