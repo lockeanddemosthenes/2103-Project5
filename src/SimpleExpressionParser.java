@@ -10,7 +10,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	private static final String ALL_CHARS = "abcdefghijklmnopqrstuvwxyz";
 	
 	
-	/*
+	/**
 	 * Attempts to create an expression tree -- flattened as much as possible -- from the specified String.
          * Throws a ExpressionParseException if the specified string cannot be parsed.
 	 * @param str the string to parse into an expression tree
