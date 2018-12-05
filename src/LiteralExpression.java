@@ -1,41 +1,24 @@
 
-public class LiteralExpression extends SimpleExpression{
+public class LiteralExpression extends SimpleCompoundExpression{
 	String sValue;
 	Integer iValue;
-	String _name;
 	CompoundExpression _parent;
 
 	@Override
-	public CompoundExpression getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setParent(CompoundExpression parent) {
-		_parent = parent;
-		
-	}
-
-	@Override
 	public Expression deepCopy() {
-		// TODO Auto-generated method stub
-		return null;
+		Expression copy = new LiteralExpression(new String(this.getName()));
+		return copy;
 	}
 
-	@Override
-	public void flatten() {
-		// TODO Auto-generated method stub
-	}
 
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
 		Expression.indent(stringBuilder, indentLevel);
-		stringBuilder.append(_name+"\n");
+		stringBuilder.append(this.getName()+"\n");
 		
 	}
 
 	public LiteralExpression(String s) {
-		_name = s;
+		super(s);
 	}
 }
