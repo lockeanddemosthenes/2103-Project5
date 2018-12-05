@@ -12,7 +12,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	/**
 	 * Attempts to create an expression tree -- flattened as much as possible -- from the specified String.
-         * Throws a ExpressionParseException if the specified string cannot be parsed.
+     * Throws ExpressionParseException if the specified string cannot be parsed.
 	 * @param str the string to parse into an expression tree
 	 * @param withJavaFXControls you can just ignore this variable for R1
 	 * @return the Expression object representing the parsed expression tree
@@ -37,6 +37,11 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return expression;
 	}
 	
+	/**
+	 * Helper class that parses the expression
+	 * @param str the string to parse into an expression tree
+	 * @return parsed form of expression
+	 */
 	protected Expression parseExpression (String str) {
 		Expression expression = null;
 		if (!validateExpression(str)) return null;
@@ -64,6 +69,11 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return expression;
 	}	
 	
+	/**
+	 * Evaluates whether or not an expression can be parsed
+	 * @param str the string being evaluated as a valid string
+	 * @return boolean of whether or not the expression can be parsed
+	 */
 	private boolean validateExpression(String str) {
 		if (!str.equals("")) {
 			try { 
@@ -90,6 +100,13 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return false;
 	}
 
+	/**
+	 * Helper function for validateExpression
+	 * Evaluates whether or not a smaller expression can be parsed
+	 * @param c the char containing the operator
+	 * @param str the string containing the rest of the expression
+	 * @return boolean of whether or not the smaller expression can be parsed
+	 */
 	private boolean validateHelper(char c, String str) {
 		for (int i = 1; i < str.length() - 1; i++) {
 			if (str.charAt(i) == c &&
@@ -101,6 +118,11 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return false;
 	}
 	
+	/**
+	 * Validates whether or not an integer can be parsed
+	 * @param str the string containing the integer being evaluated
+	 * @return boolean of whether or not the integer is valid
+	 */
 	private static boolean isValidInteger(String str) {
 		if (!str.equals("")) {
 			try { 
@@ -111,6 +133,12 @@ public class SimpleExpressionParser implements ExpressionParser {
 		else return false;
 	}
 	
+	/**
+	 * Splits the expression at the symbol
+	 * @param op the char containing the operator
+	 * @param str the string containing the rest of the expression
+	 * @return expression containing the split version of the expression
+	 */
 	private Expression splitAtSymbol(char op, String str) {
 		if (str.contains(""+op)) {
 			String first = str.substring(0 , str.indexOf(op));
