@@ -38,8 +38,28 @@ public class SimpleExpressionParser implements ExpressionParser {
 	}
 	
 	protected Expression parseExpression (String str) {
-		Expression expression = new ExpressionImpl();
+		Expression expression = null;
 		if (!validateExpression(str)) return null;
+		
+		//literal cases
+		if (ALL_CHARS.contains(str) && str.length() == 1) {
+			expression = new LiteralExpression(str);
+		}
+		else if (isValidInteger(str)) {
+			expression = new LiteralExpression(Integer.parseInt(str));
+		}
+		//multiplicative case
+		Expression multEx = splitAtSymbol('*', str);
+		if (multEx != null) {
+			expression = multEx;
+		}
+		//additive case
+		Expression addEx = splitAtSymbol('+', str);
+		if (addEx != null) {
+			expression = addEx;
+			System.out.println("here");
+		}
+		//parenthetical case
 		
 		return expression;
 	}	
@@ -80,6 +100,36 @@ public class SimpleExpressionParser implements ExpressionParser {
 		}
 		return false;
 	}
+	
+	private static boolean isValidInteger(String str) {
+		if (!str.equals("")) {
+			try { 
+				Integer.parseInt(str);
+				return true;
+			} catch (Exception e) {return false;}
+		}
+		else return false;
+	}
+	
+	private Expression splitAtSymbol(char op, String str) {
+		if (str.contains(""+op)) {
+			String first = str.substring(0 , str.indexOf(op));
+			String rest = str.substring(str.indexOf(op)+1, str.length());
+			System.out.println(first);
+			System.out.println(rest);
+			SimpleCompoundExpression out = new SimpleCompoundExpression();
+			Expression firstEx = parseExpression(first);
+			Expression restEx = parseExpression(rest);
+			
+			out.addSubexpression(firstEx);
+			out.addSubexpression(restEx);
+			firstEx.setParent(out);
+			restEx.setParent(out);
+			return out;
+		}
+		else return null;
+	}
+	
 	
 	public boolean validateTest(String str) {
 		return validateExpression(str);

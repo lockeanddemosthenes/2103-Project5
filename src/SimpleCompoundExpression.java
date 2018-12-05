@@ -1,9 +1,15 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleCompoundExpression implements CompoundExpression {
 	private CompoundExpression _parent;
 	private List<Expression> _children;
  	
+	
+	public SimpleCompoundExpression() {
+		_children = new ArrayList<Expression>();
+	}
+	
 	@Override
 	public CompoundExpression getParent() {
 		return _parent;

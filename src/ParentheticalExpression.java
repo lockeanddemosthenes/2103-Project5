@@ -1,4 +1,4 @@
 
-public class ParentheticalExpression extends AbstractCompoundExpression {
+public class ParentheticalExpression extends SimpleCompoundExpression {
 
 }
