@@ -37,10 +37,23 @@ public class SimpleCompoundExpression implements CompoundExpression {
 			 }
 		 }
 	}
-
+	
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
-		// TODO Auto-generated method stub
+		String sym = "";
+		if (this.getClass() == AdditiveExpression.class) {
+			sym = "+";
+		}
+		else if (this.getClass() == MultiplicativeExpression.class){
+			sym = "*";
+		}
+		else if (this.getClass() == ParentheticalExpression.class) {
+			sym = "()";
+		}
+		else {
+			
+		}
+		
 	}
 
 	@Override
