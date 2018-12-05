@@ -7,6 +7,7 @@ public class LiteralExpression extends SimpleCompoundExpression{
 	@Override
 	public Expression deepCopy() {
 		Expression copy = new LiteralExpression(new String(this.getName()));
+		//Doesn't need to iterate through the children
 		return copy;
 	}
 
@@ -15,6 +16,7 @@ public class LiteralExpression extends SimpleCompoundExpression{
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
 		Expression.indent(stringBuilder, indentLevel);
 		stringBuilder.append(this.getName()+"\n");
+		//Doesn't need to iterate through the children
 		
 	}
 	
