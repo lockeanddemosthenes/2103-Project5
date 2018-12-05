@@ -1,7 +1,9 @@
+import java.util.List;
 
 public class LiteralExpression implements Expression {
 	String sValue;
 	Integer iValue;
+	private List<Expression> _children;
 
 	@Override
 	public CompoundExpression getParent() {
@@ -23,8 +25,7 @@ public class LiteralExpression implements Expression {
 
 	@Override
 	public void flatten() {
-		// TODO Auto-generated method stub
-		
+		// TODO this
 	}
 
 	@Override
