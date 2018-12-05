@@ -49,8 +49,6 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 		 }
 	}
 	
-	
-	
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
 		Expression.indent(stringBuilder, indentLevel);
@@ -59,8 +57,6 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 			stringBuilder.append(child.convertToString(indentLevel+1));
 		}
 	}
-
-	
 
 	@Override
 	public CompoundExpression getParent() {

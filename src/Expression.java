@@ -1,4 +1,5 @@
 interface Expression {
+	
 	/**
 	 * Returns the expression's parent.
 	 * @return the expression's parent

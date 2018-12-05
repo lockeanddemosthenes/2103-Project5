@@ -168,6 +168,11 @@ public class SimpleExpressionParser implements ExpressionParser {
 		else return null;
 	}
 	
+	/**
+	 * Parses inner expression when parentheses exist
+	 * @param str expression being handled
+	 * @return parsed expression
+	 */
 	private Expression handleParentheticalExpression(String str) {
 		CompoundExpression out = new SimpleCompoundExpression("()");
 
@@ -177,6 +182,12 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return out;
 	}
 	
+	/**
+	 * Returns number of characters in expression
+	 * @param str the string containing the expression
+	 * @param c the char being looked for
+	 * @return number of characters in expression
+	 */
 	private int findAmountOfChar(String str, char c) {
 		int out = 0;
 		for (int i=0; i<str.length(); i++) {
@@ -185,12 +196,17 @@ public class SimpleExpressionParser implements ExpressionParser {
 		return out;
 	}
 	
+	/**
+	 * Returns whether or not the expression is parenthetical
+	 * @param str the string containing the expression
+	 * @return boolean containing whether or not the expression is parenthetical
+	 */
 	private boolean isParenthetical(String str) {
 		if (str.charAt(0) == '('&&str.charAt(str.length()-1) == ')') {
 			if (parseExpression(str.substring(1, str.length()-1))!=null){
 				return true;
-			}else return false;
-		}else return false;
+			} else return false;
+		} else return false;
 	}
 	
 	public boolean validateTest(String str) {
