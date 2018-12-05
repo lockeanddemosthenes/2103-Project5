@@ -43,23 +43,28 @@ public class SimpleExpressionParser implements ExpressionParser {
 		
 		//literal cases
 		if (ALL_CHARS.contains(str) && str.length() == 1) {
-			expression = new LiteralExpression(str);
+			return new LiteralExpression(str);
 		}
 		else if (isValidInteger(str)) {
-			expression = new LiteralExpression(Integer.parseInt(str));
+			return new LiteralExpression(Integer.parseInt(str));
 		}
+		//parenthetical case
+		else if (str.charAt(0)=='('&&str.charAt(str.length()-1) == ')') {
+			return handleParentheticalExpression(str.substring(1, str.length()-1));
+		}
+		
 		//multiplicative case
 		Expression multEx = splitAtSymbol('*', str);
 		if (multEx != null) {
-			expression = multEx;
+			return multEx;
 		}
+		
 		//additive case
 		Expression addEx = splitAtSymbol('+', str);
 		if (addEx != null) {
-			expression = addEx;
-			System.out.println("here");
+			return addEx;
 		}
-		//parenthetical case
+		
 		
 		return expression;
 	}	
@@ -113,16 +118,27 @@ public class SimpleExpressionParser implements ExpressionParser {
 	
 	private Expression splitAtSymbol(char op, String str) {
 		if (str.contains(""+op)) {
-			String first = str.substring(0 , str.indexOf(op));
-			String rest = str.substring(str.indexOf(op)+1, str.length());
-			System.out.println(first);
-			System.out.println(rest);
-			SimpleCompoundExpression out = new SimpleCompoundExpression();
+			int start = 0;
+			String temp = str;
+			System.out.println("test paren "+str);
+			System.out.println("op index " + str.indexOf(op));
+			if (str.contains("(")&&(str.indexOf('(') < str.indexOf(op))) {
+				start = str.indexOf(')')+1;
+				System.out.println("hit " + start);
+				temp = str.substring(start);
+			}
+			String first = str.substring(0 , temp.indexOf(op)+start);
+			System.out.println("first " + first);
+			String rest = str.substring(temp.indexOf(op)+1+start, str.length());
+			System.out.println("rest " + rest);
+			
+			CompoundExpression out = new SimpleCompoundExpression();
 			Expression firstEx = parseExpression(first);
 			Expression restEx = parseExpression(rest);
 			
 			out.addSubexpression(firstEx);
 			out.addSubexpression(restEx);
+
 			firstEx.setParent(out);
 			restEx.setParent(out);
 			return out;
@@ -130,6 +146,14 @@ public class SimpleExpressionParser implements ExpressionParser {
 		else return null;
 	}
 	
+	private Expression handleParentheticalExpression(String str) {
+		CompoundExpression out = new ParentheticalExpression();
+
+		Expression middle = parseExpression(str);
+		out.addSubexpression(middle);
+		middle.setParent(out);
+		return out;
+	}
 	
 	public boolean validateTest(String str) {
 		return validateExpression(str);
