@@ -45,6 +45,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	protected Expression parseExpression (String str) {
 		Expression expression = null;
 		if (!validateExpression(str)) return null;
+		
 		//literal cases
 		if (ALL_CHARS.contains(str) && str.length() == 1) {
 			return new LiteralExpression(str);
@@ -52,8 +53,8 @@ public class SimpleExpressionParser implements ExpressionParser {
 		else if (isValidInteger(str)) {
 			return new LiteralExpression(str);
 		}
-		//parenthetical case
 		
+		//parenthetical case
 		else if (isParenthetical(str)) {
 			return handleParentheticalExpression(str.substring(1, str.length()-1));
 		}
