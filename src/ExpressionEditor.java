@@ -2,14 +2,17 @@ import javafx.application.Application;
 import java.util.*;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -26,11 +29,46 @@ public class ExpressionEditor extends Application {
 	 * Mouse event handler for the entire pane that constitutes the ExpressionEditor
 	 */
 	private static class MouseEventHandler implements EventHandler<MouseEvent> {
+		private CompoundExpression _rootExpression;
+		private Pane _pane;
+		private static CompoundExpression focusedExpression = null;
+		
 		MouseEventHandler (Pane pane_, CompoundExpression rootExpression_) {
+			_pane = pane_;
+			_rootExpression = rootExpression_;
+			if (focusedExpression == null) focusedExpression = _rootExpression;
 		}
-
+		
+		public void clearStyle(Node node) {
+			node.setStyle(null);
+			if (node instanceof Label) return;
+			for (Node child : ((HBox) node).getChildren()) {
+				clearStyle(child);
+			}
+		}
+		
 		public void handle (MouseEvent event) {
 			if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
+				List<Expression> children = ((SimpleCompoundExpression) focusedExpression).getChildren();
+				for (int i = 0; i <children.size(); i++) {
+					if (children.get(i).getNode() instanceof HBox) {
+						if (focusedExpression.getNode().isPressed()) {
+							((HBox) children.get(i).getNode()).setStyle(null);
+							if (children.get(i).getNode().isPressed()) {
+							    ((HBox) children.get(i).getNode()).setStyle("-fx-padding: 1;" + "-fx-border-style: solid inside;"
+							        + "-fx-border-width: 1;" + "-fx-border-insets: 1;"
+							        + "-fx-border-radius: 1;" + "-fx-border-color: black;");
+							    if (((SimpleCompoundExpression) children.get(i)).getChildren().size()>0)
+							    	focusedExpression = (CompoundExpression) ((SimpleCompoundExpression) focusedExpression).getChildren().get(i);
+							}
+						}
+						else {
+							clearStyle(_rootExpression.getNode());
+							System.out.println("hewwo");
+							focusedExpression = _rootExpression;
+						}
+					}
+				}
 			} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
 			} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 			}
@@ -76,7 +114,6 @@ public class ExpressionEditor extends Application {
 					expressionPane.getChildren().add(expression.getNode());
 					expression.getNode().setLayoutX(WINDOW_WIDTH/4);
 					expression.getNode().setLayoutY(WINDOW_HEIGHT/2);
-
 					// If the parsed expression is a CompoundExpression, then register some callbacks
 					if (expression instanceof CompoundExpression) {
 						((Pane) expression.getNode()).setBorder(Expression.NO_BORDER);
@@ -91,6 +128,10 @@ public class ExpressionEditor extends Application {
 				}
 			}
 		});
+		
+		
+		
+		
 		queryPane.getChildren().add(button);
 
 		// Reset the color to black whenever the user presses a key
