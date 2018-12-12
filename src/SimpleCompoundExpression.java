@@ -2,16 +2,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.Node;
+import javafx.scene.layout.HBox;
 
 public class SimpleCompoundExpression implements Expression, CompoundExpression { 	
 	private List<Expression> _children;
 	private String _name;
 	private CompoundExpression _parent;
-	private Node _node;
+	private HBox _node;
 	public SimpleCompoundExpression(String str) {
 		_name = str;
 		_children = new ArrayList<Expression>();
-		
+		_node = (HBox) createNode();
 	}
 	
 	public List<Expression> getChildren(){
@@ -21,11 +22,13 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public void addSubexpression(Expression subexpression) {
 		_children.add(subexpression);
+		_node.getChildren().add(subexpression.getNode());
 	}
 	
 	@Override
 	public void setParent(CompoundExpression parent) {
 		_parent = parent;
+		((SimpleCompoundExpression) _parent).setNode(_node);
 	}
 
 	@Override
@@ -50,6 +53,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 				 getChildren().remove(child);
 			 }
 		 }
+		 _node = (HBox) createNode(); //freshen the node
 	}
 	
 	@Override
@@ -68,12 +72,17 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 
 	@Override
 	public Node getNode() {
-		// TODO Auto-generated method stub
-		return null;
+		return _node;
 	}
-
-	public void setNode(Node _node) {
-		this._node = _node;
+	
+	public Node createNode() {
+		for (Expression child : getChildren())
+			_node.getChildren().add(child.getNode());
+		return _node;
+	}
+	
+	public void setNode(Node node) {
+		_node = (HBox) node;
 	}
 	
 }
