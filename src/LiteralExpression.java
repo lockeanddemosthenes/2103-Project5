@@ -1,5 +1,5 @@
 
-public class LiteralExpression extends SimpleCompoundExpression{
+public class LiteralExpression extends SimpleCompoundExpression {
 	String sValue;
 	Integer iValue;
 	CompoundExpression _parent;

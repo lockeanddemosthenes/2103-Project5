@@ -1,30 +1,27 @@
-import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 
-public class SimpleCompoundExpression implements Expression, CompoundExpression { 	
+public abstract class CompoundExpressionAbstract implements Expression {
 	private List<Expression> _children;
-	private String _name;
-	private CompoundExpression _parent;
+	CompoundExpression _parent;
 	private HBox _node;
-	public SimpleCompoundExpression(String str) {
-		_name = str;
-		_children = new ArrayList<Expression>();
-		_node = (HBox) createNode();
-	}
+	private String _name;
 	
-	public List<Expression> getChildren(){
-		return _children;
+	void addSubexpression (Expression subexpression) {
 	}
 	
 	@Override
-	public void addSubexpression(Expression subexpression) {
-		_children.add(subexpression);
-		_node.getChildren().add(subexpression.getNode());
+	public CompoundExpression getParent() {
+		return _parent;
 	}
-	
+
+	@Override
+	public Node getNode() {
+		return _node;
+	}
+
 	@Override
 	public void setParent(CompoundExpression parent) {
 		_parent = parent;
@@ -33,12 +30,8 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 
 	@Override
 	public Expression deepCopy() {
-		//TODO Implement for R2 
+		// TODO Implement for R2
 		return null;
-	}
-	
-	public String getName() {
-		return _name;
 	}
 
 	@Override
@@ -55,7 +48,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 		 }
 		 _node = (HBox) createNode(); //freshen the node
 	}
-	
+
 	@Override
 	public void convertToString(StringBuilder stringBuilder, int indentLevel) {
 		Expression.indent(stringBuilder, indentLevel);
@@ -64,25 +57,19 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 			stringBuilder.append(child.convertToString(indentLevel+1));
 		}
 	}
-
-	@Override
-	public CompoundExpression getParent() {
-		return _parent;
+	
+	public List<Expression> getChildren(){
+		return _children;
 	}
-
-	@Override
-	public Node getNode() {
-		return _node;
+	
+	public String getName() {
+		return _name;
 	}
 	
 	public Node createNode() {
 		for (Expression child : getChildren())
 			_node.getChildren().add(child.getNode());
 		return _node;
-	}
-	
-	public void setNode(Node node) {
-		_node = (HBox) node;
 	}
 	
 }
