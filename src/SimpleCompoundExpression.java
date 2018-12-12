@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 
 public class SimpleCompoundExpression implements Expression, CompoundExpression { 	
@@ -23,12 +24,14 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	public void addSubexpression(Expression subexpression) {
 		_children.add(subexpression);
 		_node.getChildren().add(subexpression.getNode());
+		if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
 	}
 	
 	@Override
 	public void setParent(CompoundExpression parent) {
 		_parent = parent;
 		((SimpleCompoundExpression) _parent).setNode(_node);
+		((SimpleCompoundExpression) _parent).updateNode();
 	}
 
 	@Override
@@ -78,11 +81,41 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	public Node createNode() {
 		for (Expression child : getChildren())
 			_node.getChildren().add(child.getNode());
+		_node = new HBox();
+		if (getChildren().size() == 0) {
+			_node.getChildren().add(new Label(_name));
+			return _node;
+		}
+		if ("()".equals(_name)) { 
+			_node.getChildren().add(new Label("("));
+			_node.getChildren().add(getChildren().get(0).getNode());
+			_node.getChildren().add(new Label(")"));
+		}
+		else if ("*".equals(_name)) {
+			for (int i = 0; i<getChildren().size();i++) {
+				_node.getChildren().add(getChildren().get(i).getNode());
+				if (i != getChildren().size()-1) _node.getChildren().add(new Label("*"));
+			}
+		}
+		else if ("+".equals(_name)) {
+			for (int i = 0; i<getChildren().size();i++) {
+				_node.getChildren().add(getChildren().get(i).getNode());
+				if (i != getChildren().size()-1) _node.getChildren().add(new Label("+"));
+			}
+		}
+		else {
+			_node.getChildren().add(new Label(_name));
+		}
 		return _node;
 	}
 	
 	public void setNode(Node node) {
 		_node = (HBox) node;
+		((SimpleCompoundExpression) _parent).updateNode();
+	}
+	
+	public void updateNode() {
+		_node = (HBox) createNode();
 	}
 	
 }
