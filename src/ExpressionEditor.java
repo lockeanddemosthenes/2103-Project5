@@ -8,8 +8,13 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -18,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class ExpressionEditor extends Application {
@@ -32,6 +38,9 @@ public class ExpressionEditor extends Application {
 		private CompoundExpression _rootExpression;
 		private Pane _pane;
 		private static CompoundExpression focusedExpression = null;
+		private static MouseEvent ogEvent = null;
+		private static Double originalPositionX = null;
+		private static Double originalPositionY = null;
 		
 		MouseEventHandler (Pane pane_, CompoundExpression rootExpression_) {
 			_pane = pane_;
@@ -40,8 +49,8 @@ public class ExpressionEditor extends Application {
 		}
 		
 		public void clearStyle(Node node) {
-			node.setStyle(null);
 			if (node instanceof Label) return;
+			((HBox) node).setBorder(null);
 			for (Node child : ((HBox) node).getChildren()) {
 				clearStyle(child);
 			}
@@ -51,26 +60,43 @@ public class ExpressionEditor extends Application {
 			if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 				List<Expression> children = ((SimpleCompoundExpression) focusedExpression).getChildren();
 				for (int i = 0; i <children.size(); i++) {
+					
 					if (children.get(i).getNode() instanceof HBox) {
+						
 						if (focusedExpression.getNode().isPressed()) {
-							((HBox) children.get(i).getNode()).setStyle(null);
+							((HBox) children.get(i).getNode()).setBorder(null);
+							
 							if (children.get(i).getNode().isPressed()) {
-							    ((HBox) children.get(i).getNode()).setStyle("-fx-padding: 1;" + "-fx-border-style: solid inside;"
-							        + "-fx-border-width: 1;" + "-fx-border-insets: 1;"
-							        + "-fx-border-radius: 1;" + "-fx-border-color: black;");
-							    if (((SimpleCompoundExpression) children.get(i)).getChildren().size()>0)
+							    ((HBox) children.get(i).getNode()).setBorder(new Border(new BorderStroke(
+							    		Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))); //set the border
+							    
+							    if (((SimpleCompoundExpression) children.get(i)).getChildren().size()>0) //change focus
 							    	focusedExpression = (CompoundExpression) ((SimpleCompoundExpression) focusedExpression).getChildren().get(i);
 							}
 						}
 						else {
 							clearStyle(_rootExpression.getNode());
-							System.out.println("hewwo");
 							focusedExpression = _rootExpression;
 						}
 					}
 				}
 			} else if (event.getEventType() == MouseEvent.MOUSE_DRAGGED) {
+				if (focusedExpression == _rootExpression) return;
+				if (ogEvent == null) {
+					ogEvent = event;
+				}
+				final double mouseX = event.getSceneX();
+				final double mouseY = event.getSceneY();
+				((HBox) focusedExpression.getNode()).setTranslateX(mouseX-ogEvent.getSceneX());
+				((HBox) focusedExpression.getNode()).setTranslateY(mouseY-ogEvent.getSceneY());
+				
 			} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
+				if (focusedExpression == _rootExpression) return;
+				if (ogEvent!=null)	{
+					((HBox) focusedExpression.getNode()).setTranslateX(0);
+					((HBox) focusedExpression.getNode()).setTranslateY(0);
+					ogEvent = null;
+				}
 			}
 		}
 	}
