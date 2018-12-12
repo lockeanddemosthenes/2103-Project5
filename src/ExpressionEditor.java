@@ -129,9 +129,6 @@ public class ExpressionEditor extends Application {
 			}
 		});
 		
-		
-		
-		
 		queryPane.getChildren().add(button);
 
 		// Reset the color to black whenever the user presses a key

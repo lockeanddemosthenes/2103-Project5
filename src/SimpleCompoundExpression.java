@@ -23,6 +23,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public void addSubexpression(Expression subexpression) {
 		_children.add(subexpression);
+		System.out.println(subexpression);
 		_node.getChildren().add(subexpression.getNode());
 		if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
 	}
@@ -30,7 +31,6 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public void setParent(CompoundExpression parent) {
 		_parent = parent;
-		((SimpleCompoundExpression) _parent).setNode(_node);
 		((SimpleCompoundExpression) _parent).updateNode();
 	}
 
@@ -79,8 +79,8 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	}
 	
 	public Node createNode() {
-		for (Expression child : getChildren())
-			_node.getChildren().add(child.getNode());
+//		for (Expression child : getChildren())
+//			_node.getChildren().add(child.getNode());
 		_node = new HBox();
 		if (getChildren().size() == 0) {
 			_node.getChildren().add(new Label(_name));

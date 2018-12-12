@@ -1,5 +1,3 @@
-import javafx.stage.Stage;
-
 /**
  * Starter code to implement an ExpressionParser. Your parser methods should use the following grammar:
  * E := A | X
@@ -41,7 +39,6 @@ public class SimpleExpressionParser implements ExpressionParser {
 	protected Expression parseExpression (String str) {
 		Expression expression = null;
 		if (!validateExpression(str)) return null;
-		
 		//literal cases
 		if (ALL_CHARS.contains(str) && str.length() == 1) {
 			return new LiteralExpression(str);
@@ -49,8 +46,8 @@ public class SimpleExpressionParser implements ExpressionParser {
 		else if (isValidInteger(str)) {
 			return new LiteralExpression(str);
 		}
-		
 		//parenthetical case
+		
 		else if (isParenthetical(str)) {
 			return handleParentheticalExpression(str.substring(1, str.length()-1));
 		}
@@ -76,14 +73,12 @@ public class SimpleExpressionParser implements ExpressionParser {
 	 */
 	private boolean validateExpression(String str) {
 		if (!str.equals("")) {
-			try { 
-				Integer.parseInt(str);
-				return true;
-			} catch (Exception e) {}
+			return false;
 		}
-		else return false;
-		
-		if (ALL_CHARS.contains(str)&&str.length()==1) {
+		else if (isValidInteger(str)) {
+			return true;
+		}
+		else if (ALL_CHARS.contains(str)&&str.length()==1) {
 			return true;
 		}
 		else if (validateHelper('+', str)) {
@@ -92,9 +87,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 		else if (validateHelper('*', str)) {
 			return true;
 		}
-		else if (str.charAt(0) == '(' && 
-				str.charAt(str.length()-1) == ')' &&
-				validateExpression(str.substring(1, str.length()-1))){
+		else if (isParenthetical(str)){
 			return true;
 		}
 		return false;
