@@ -30,10 +30,6 @@ public class SimpleExpressionParser implements ExpressionParser {
 		
 		// Flatten the expression before returning
 		expression.flatten();
-		if (withJavaFXControls) {
-			ExpressionEditor expressionEditor= new ExpressionEditor();
-			expressionEditor.start(new Stage());
-		}
 		return expression;
 	}
 	
