@@ -72,7 +72,7 @@ public class SimpleExpressionParser implements ExpressionParser {
 	 * @return boolean of whether or not the expression can be parsed
 	 */
 	private boolean validateExpression(String str) {
-		if (!str.equals("")) {
+		if (str.equals("")) {
 			return false;
 		}
 		else if (isValidInteger(str)) {

@@ -79,8 +79,6 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	}
 	
 	public Node createNode() {
-//		for (Expression child : getChildren())
-//			_node.getChildren().add(child.getNode());
 		_node = new HBox();
 		if (getChildren().size() == 0) {
 			_node.getChildren().add(new Label(_name));
