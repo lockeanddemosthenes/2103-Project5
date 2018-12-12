@@ -1,10 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.Node;
+
 public class SimpleCompoundExpression implements Expression, CompoundExpression { 	
 	private List<Expression> _children;
 	private String _name;
 	private CompoundExpression _parent;
+	private Node _node;
 	public SimpleCompoundExpression(String str) {
 		_name = str;
 		_children = new ArrayList<Expression>();
@@ -61,6 +64,16 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public CompoundExpression getParent() {
 		return _parent;
+	}
+
+	@Override
+	public Node getNode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setNode(Node _node) {
+		this._node = _node;
 	}
 	
 }

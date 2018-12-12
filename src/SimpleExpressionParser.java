@@ -1,3 +1,5 @@
+import javafx.stage.Stage;
+
 /**
  * Starter code to implement an ExpressionParser. Your parser methods should use the following grammar:
  * E := A | X
@@ -28,6 +30,10 @@ public class SimpleExpressionParser implements ExpressionParser {
 		
 		// Flatten the expression before returning
 		expression.flatten();
+		if (withJavaFXControls) {
+			ExpressionEditor expressionEditor= new ExpressionEditor();
+			expressionEditor.start(new Stage());
+		}
 		return expression;
 	}
 	
