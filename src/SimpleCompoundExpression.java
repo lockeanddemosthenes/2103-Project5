@@ -24,7 +24,6 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public void addSubexpression(Expression subexpression) {
 		_children.add(subexpression);
-		System.out.println(subexpression);
 		_node.getChildren().add(subexpression.getNode());
 		if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
 		subexpression.setParent(this);
@@ -38,8 +37,12 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 
 	@Override
 	public Expression deepCopy() {
-		//TODO Implement for R2 
-		return null;
+		CompoundExpression copy = new SimpleCompoundExpression(new String(_name));
+		for (Expression child : getChildren()) {
+			child = child.deepCopy();
+			copy.addSubexpression(child);
+		}
+		return copy;
 	}
 	
 	public String getName() {
