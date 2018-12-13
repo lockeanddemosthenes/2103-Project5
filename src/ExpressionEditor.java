@@ -42,13 +42,13 @@ public class ExpressionEditor extends Application {
 		private static MouseEvent ogEvent = null;
 		
 		
-		MouseEventHandler (Pane pane_, CompoundExpression rootExpression_) {
+		public MouseEventHandler (Pane pane_, CompoundExpression rootExpression_) {
 			_pane = pane_;
 			_rootExpression = rootExpression_;
 			if (focusedExpression == null) focusedExpression = _rootExpression;
 		}
 		
-		public void clearStyle(Node node) {
+		private void clearStyle(Node node) {
 			if (node instanceof Text || node instanceof Label) return;
 			((HBox) node).setBorder(null);
 			for (Node child : ((HBox) node).getChildren()) {
@@ -56,18 +56,55 @@ public class ExpressionEditor extends Application {
 			}
 		}
 		
-		public void resetFocus() {
+		private void resetFocus() {
 			clearStyle(_rootExpression.getNode());
 			focusedExpression = _rootExpression;
 		}
 		
-		public void refreshPane() {
+		private void refreshPane() {
 			((SimpleCompoundExpression) _rootExpression).updateNode();
 			_pane.getChildren().clear();
 			_pane.getChildren().add(_rootExpression.getNode());
 			_pane.getChildren().add(copy.getNode());
 			_rootExpression.getNode().setLayoutX(WINDOW_WIDTH/4);
 			_rootExpression.getNode().setLayoutY(WINDOW_HEIGHT/2);
+		}
+		
+		private <T> List<List<T>> getPossiblePermutations(List<T> inList, T movingItem){
+			List<List<T>> list = new ArrayList<List<T>>();
+			int currentIndex = inList.indexOf(movingItem);
+			List<T> temp = inList;
+			while(currentIndex > 0) { //permutations to the left of the moving item
+				currentIndex--;
+				switchElements(temp, movingItem, temp.get(currentIndex));
+				list.add(temp);
+			}
+			temp = inList;
+			while(currentIndex < inList.size()-1) { //permutations to the right of the moving item
+				currentIndex++;
+				switchElements(temp, movingItem, temp.get(currentIndex));
+				list.add(temp);
+			}
+			return list;
+		}
+		
+		private List<Expression> getClosestXi(Expression copied, Expression focused, List<List<Expression>> list) {
+			int indexOfSmallestXi = -1;
+			double smallestXi = -1;
+			for (int i = 0; i < list.size(); i++) {
+				double temp = calculateXi(copied, focused, list.get(i));
+				if (temp < smallestXi || smallestXi == -1) {
+					smallestXi = temp;
+					indexOfSmallestXi = i;
+				}
+			}
+			return list.get(indexOfSmallestXi);
+				
+		}
+		
+		private double calculateXi(Expression copied, Expression focused, List<Expression> list) {
+			
+			return 0.0;
 		}
 		
 		public void handle (MouseEvent event) {
@@ -111,49 +148,14 @@ public class ExpressionEditor extends Application {
 				final double newY = event.getY()-focusedExpression.getNode().getParent().sceneToLocal(ogEvent.getSceneX(),ogEvent.getSceneY()).getY();
 				((HBox) copy.getNode()).setTranslateX(newX);
 				((HBox) copy.getNode()).setTranslateY(newY);
-				try {
-					Expression rightSibling  = ((SimpleCompoundExpression) focusedExpression.getParent()).getChildren()
-							.get(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().indexOf(focusedExpression)+1);
-					
-					final Point2D targetCoord = focusedExpression.getParent().getNode()
-							.localToScene(rightSibling.getNode().getLayoutX(), rightSibling.getNode().getLayoutY());
-					final Point2D originalCoord = focusedExpression.getNode()
-							.localToScene(focusedExpression.getNode().getLayoutX(), focusedExpression.getNode().getLayoutY());
-					final Point2D copyCoord = copy.getNode()
-							.localToScene(copy.getNode().getLayoutX(), copy.getNode().getLayoutY());
-					System.out.println(copy.getNode().getTranslateX()+focusedExpression.getNode().getLayoutBounds().getMaxX());
-					System.out.println("beebop");
-					System.out.println(targetCoord);
-					if (copyCoord.distance(originalCoord) > copyCoord.distance(targetCoord)){//the leftmost bounds of the focused expression
-						
-						System.out.println("RIGHT");
-						switchElements(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren(), focusedExpression, rightSibling);
-						refreshPane();
-						//System.out.println(_rootExpression.convertToString(1));
-						return;
-					}
-				} catch (IndexOutOfBoundsException e) {}
-				try {
-					Expression leftSibling  = ((SimpleCompoundExpression) focusedExpression.getParent()).getChildren()
-							.get(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().indexOf(focusedExpression)-1);
-					
-					final Point2D targetCoord = focusedExpression.getParent().getNode()
-							.localToScene(leftSibling.getNode().getLayoutX(), leftSibling.getNode().getLayoutY());
-					final Point2D originalCoord = focusedExpression.getNode()
-							.localToScene(focusedExpression.getNode().getLayoutX(), focusedExpression.getNode().getLayoutY());
-					final Point2D copyCoord = copy.getNode()
-							.localToScene(copy.getNode().getLayoutX(), copy.getNode().getLayoutY());
-					
-					if (copyCoord.distance(originalCoord) > copyCoord.distance(targetCoord)) { //the rightmost bounds of the focused expression
-						System.out.println("LEFT");
-						switchElements(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren(), focusedExpression, leftSibling);
-						
-						refreshPane();
-						//System.out.println(_rootExpression.convertToString(1));
-						return;
-						
-					}
-				} catch (IndexOutOfBoundsException e) {} 
+				
+				List<List<Expression>> possiblePermutations = 
+						getPossiblePermutations(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren(), focusedExpression);
+				
+				List<Expression> closestXiList = getClosestXi(copy, focusedExpression, possiblePermutations);
+				((SimpleCompoundExpression) focusedExpression).getChildren().removeAll(((SimpleCompoundExpression) focusedExpression).getChildren());
+				((SimpleCompoundExpression) focusedExpression).getChildren().addAll(closestXiList);
+				refreshPane();
 				
 			} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
 				if (focusedExpression == _rootExpression) return;
