@@ -4,6 +4,7 @@ import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 
 public class SimpleCompoundExpression implements Expression, CompoundExpression { 	
 	private List<Expression> _children;
@@ -26,6 +27,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 		System.out.println(subexpression);
 		_node.getChildren().add(subexpression.getNode());
 		if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
+		subexpression.setParent(this);
 	}
 	
 	@Override
@@ -81,7 +83,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	public Node createNode() {
 		_node = new HBox();
 		if (getChildren().size() == 0) {
-			_node.getChildren().add(new Label(_name));
+			_node = new HBox(new Text(_name));
 			return _node;
 		}
 		if ("()".equals(_name)) { 
@@ -89,20 +91,15 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 			_node.getChildren().add(getChildren().get(0).getNode());
 			_node.getChildren().add(new Label(")"));
 		}
-		else if ("*".equals(_name)) {
+		
+		else if ("+".equals(_name)||"*".equals(_name)) {
 			for (int i = 0; i<getChildren().size();i++) {
 				_node.getChildren().add(getChildren().get(i).getNode());
-				if (i != getChildren().size()-1) _node.getChildren().add(new Label("*"));
-			}
-		}
-		else if ("+".equals(_name)) {
-			for (int i = 0; i<getChildren().size();i++) {
-				_node.getChildren().add(getChildren().get(i).getNode());
-				if (i != getChildren().size()-1) _node.getChildren().add(new Label("+"));
+				if (i != getChildren().size()-1) _node.getChildren().add(new Label(_name));
 			}
 		}
 		else {
-			_node.getChildren().add(new Label(_name));
+			_node = new HBox(new Text(_name));
 		}
 		return _node;
 	}

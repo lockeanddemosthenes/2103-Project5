@@ -24,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ExpressionEditor extends Application {
@@ -49,7 +50,8 @@ public class ExpressionEditor extends Application {
 		}
 		
 		public void clearStyle(Node node) {
-			if (node instanceof Label) return;
+			if (node instanceof Text || node instanceof Label) return;
+			Text text = new Text();
 			((HBox) node).setBorder(null);
 			for (Node child : ((HBox) node).getChildren()) {
 				clearStyle(child);
@@ -60,7 +62,6 @@ public class ExpressionEditor extends Application {
 			if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 				List<Expression> children = ((SimpleCompoundExpression) focusedExpression).getChildren();
 				for (int i = 0; i <children.size(); i++) {
-					
 					if (children.get(i).getNode() instanceof HBox) {
 						
 						if (focusedExpression.getNode().isPressed()) {
@@ -70,7 +71,7 @@ public class ExpressionEditor extends Application {
 							    ((HBox) children.get(i).getNode()).setBorder(new Border(new BorderStroke(
 							    		Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT))); //set the border
 							    
-							    if (((SimpleCompoundExpression) children.get(i)).getChildren().size()>0) //change focus
+							   // if (((SimpleCompoundExpression) children.get(i)).getChildren().size()>0) //change focus
 							    	focusedExpression = (CompoundExpression) ((SimpleCompoundExpression) focusedExpression).getChildren().get(i);
 							}
 						}
