@@ -1,5 +1,7 @@
 import javafx.application.Application;
 import java.util.*;
+
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
@@ -73,14 +75,16 @@ public class ExpressionEditor extends Application {
 		private <T> List<List<T>> getPossiblePermutations(List<T> inList, T movingItem){
 			List<List<T>> list = new ArrayList<List<T>>();
 			int currentIndex = inList.indexOf(movingItem);
-			List<T> temp = inList;
+			List<T> temp = new ArrayList<T>();
+			temp.addAll(inList);
 			list.add(temp);
 			while(currentIndex > 0) { //permutations to the left of the moving item
 				currentIndex--;
 				switchElements(temp, movingItem, temp.get(currentIndex));
 				list.add(temp);
 			}
-			temp = inList;
+			temp.clear();
+			temp.addAll(inList);
 			while(currentIndex < inList.size()-1) { //permutations to the right of the moving item
 				currentIndex++;
 				switchElements(temp, movingItem, temp.get(currentIndex));
@@ -104,7 +108,7 @@ public class ExpressionEditor extends Application {
 		}
 		
 		private double calculateXi(Expression copied, CompoundExpression focused, List<Expression> list) {
-			SimpleCompoundExpression c = new SimpleCompoundExpression(new String(((SimpleCompoundExpression) focused).getName()));
+			SimpleCompoundExpression c = (SimpleCompoundExpression) focused.deepCopy();
 			c.getChildren().clear();
 			Expression focusTemp = null;
 			for (int i = 0; i < list.size(); i++) {
@@ -119,7 +123,13 @@ public class ExpressionEditor extends Application {
 			c.getNode().setLayoutX(focused.getNode().getLayoutX());
 			c.getNode().setLayoutY(WINDOW_HEIGHT*5);
 			c.getNode().setOpacity(0);
-			double temp = Math.abs(focusTemp.getNode().getLayoutX()-copied.getNode().getLayoutX());
+			
+			Bounds focusb = focusTemp.getNode().getBoundsInLocal();
+			double focusCenter = focusb.getMinX()+(focusb.getMaxX()-focusb.getMinX())/2;
+			
+			Bounds copyb = copied.getNode().getBoundsInLocal();
+			double copyCenter = copyb.getMinX()+(copyb.getMaxX()-copyb.getMinX())/2;
+			double temp = Math.abs(focusCenter-copyCenter);
 			_pane.getChildren().remove(c.getNode());
 			return temp;
 		}
@@ -162,8 +172,8 @@ public class ExpressionEditor extends Application {
 				}
 				focusedExpression.getNode().setOpacity(.5);
 				
-				final double newX = event.getX()-focusedExpression.getNode().getParent().sceneToLocal(ogEvent.getSceneX(),ogEvent.getSceneY()).getX();
-				final double newY = event.getY()-focusedExpression.getNode().getParent().sceneToLocal(ogEvent.getSceneX(),ogEvent.getSceneY()).getY();
+				final double newX = event.getX()-focusedExpression.getNode().sceneToLocal(ogEvent.getSceneX(),ogEvent.getSceneY()).getX();
+				final double newY = event.getY()-focusedExpression.getNode().sceneToLocal(ogEvent.getSceneX(),ogEvent.getSceneY()).getY();
 				((HBox) copy.getNode()).setTranslateX(newX);
 				((HBox) copy.getNode()).setTranslateY(newY);
 				
@@ -171,8 +181,8 @@ public class ExpressionEditor extends Application {
 						getPossiblePermutations(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren(), focusedExpression);
 				
 				List<Expression> closestXiList = getClosestXi(copy, focusedExpression, possiblePermutations);
-				((SimpleCompoundExpression) focusedExpression).getChildren().clear();
-				((SimpleCompoundExpression) focusedExpression).getChildren().addAll(closestXiList);
+				((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().clear();
+				((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().addAll(closestXiList);
 				refreshPane();
 				
 			} else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {

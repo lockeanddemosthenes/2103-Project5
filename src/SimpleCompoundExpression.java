@@ -27,8 +27,8 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 		_children.add(subexpression);
 		
 		//if (!((HBox) getNode()).getChildren().contains(subexpression.getNode()))
-			((HBox) getNode()).getChildren().add(subexpression.getNode());
-		//if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
+		((HBox) getNode()).getChildren().add(subexpression.getNode());
+		if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
 		subexpression.setParent(this);
 		
 	}
