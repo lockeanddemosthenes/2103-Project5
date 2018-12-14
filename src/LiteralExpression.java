@@ -4,12 +4,12 @@ public class LiteralExpression extends SimpleCompoundExpression {
 	Integer iValue;
 	CompoundExpression _parent;
 
-	@Override
-	public Expression deepCopy() {
-		Expression copy = new LiteralExpression(new String(this.getName()));
-		//Doesn't need to iterate through the children
-		return copy;
-	}
+//	@Override
+//	public Expression deepCopy() {
+//		Expression copy = new LiteralExpression(new String(this.getName()));
+//		//Doesn't need to iterate through the children
+//		return copy;
+//	}
 
 
 	@Override

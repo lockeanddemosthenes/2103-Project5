@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
@@ -10,7 +11,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	private List<Expression> _children;
 	private String _name;
 	private CompoundExpression _parent;
-	private HBox _node;
+	private HBox _node = null;
 	public SimpleCompoundExpression(String str) {
 		_name = str;
 		_children = new ArrayList<Expression>();
@@ -24,9 +25,12 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public void addSubexpression(Expression subexpression) {
 		_children.add(subexpression);
-		_node.getChildren().add(subexpression.getNode());
-		if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
+		
+		//if (!((HBox) getNode()).getChildren().contains(subexpression.getNode()))
+			((HBox) getNode()).getChildren().add(subexpression.getNode());
+		//if (_parent!= null) ((SimpleCompoundExpression) _parent).updateNode();
 		subexpression.setParent(this);
+		
 	}
 	
 	@Override
@@ -38,7 +42,7 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 	@Override
 	public Expression deepCopy() {
 		CompoundExpression copy = new SimpleCompoundExpression(new String(_name));
-		for (Expression child : getChildren()) {
+		for (Expression child : this.getChildren()) {
 			child = child.deepCopy();
 			copy.addSubexpression(child);
 		}
@@ -80,15 +84,19 @@ public class SimpleCompoundExpression implements Expression, CompoundExpression 
 
 	@Override
 	public Node getNode() {
+		if (_node == null) {
+			_node = (HBox) createNode();
+		}
 		return _node;
 	}
 	
 	public Node createNode() {
-		_node = new HBox();
+		
 		if (getChildren().size() == 0) {
 			_node = new HBox(new Text(_name));
 			return _node;
 		}
+		_node = new HBox();
 		if ("()".equals(_name)) { 
 			_node.getChildren().add(new Label("("));
 			_node.getChildren().add(getChildren().get(0).getNode());
