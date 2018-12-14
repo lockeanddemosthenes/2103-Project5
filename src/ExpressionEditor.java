@@ -107,11 +107,14 @@ public class ExpressionEditor extends Application {
 			double smallestXi = Double.MAX_VALUE;
 			for (int i = 0; i < list.size(); i++) {
 				double temp = calculateXi(copied, (CompoundExpression) focused, list.get(i), mouseX);
+				System.out.println(temp + " temp : smallestXi " + smallestXi);
 				if (temp < smallestXi) {
 					smallestXi = temp;
 					indexOfSmallestXi = i;
 				}
 			}
+			//System.out.println(indexOfSmallestXi);
+			//System.out.println(list.get(indexOfSmallestXi));
 			return list.get(indexOfSmallestXi);
 				
 		}
@@ -122,40 +125,40 @@ public class ExpressionEditor extends Application {
 			HBox focusTemp = null;
 			//System.out.println("AY focus" + focused);
 			//if (!list.contains(focused))System.out.println("whelp");
-			//System.out.println(list);
+			System.out.println(list);
+			//s_pane.getChildren().add(c.getNode());
+			list.get(list.indexOf(focusedExpression));
 			for (int i = 0; i < list.size(); i++) {
 				SimpleCompoundExpression child = (SimpleCompoundExpression) list.get(i).deepCopy();
-				((HBox) c.getNode()).getChildren().add(child.getNode());
-				if (list.get(i) == focusedExpression) {
+				//((HBox) c.getNode()).getChildren().add(child.getNode());
+				_pane.getChildren().add(child.getNode());
+				child.getNode().setLayoutX(WINDOW_WIDTH/4);
+				child.getNode().setLayoutY(WINDOW_HEIGHT/3);
+				if (list.get(i).equals(focusedExpression)) {
 					System.out.println("FOcus index"+i);
-					focusTemp = (HBox) child.getNode();
+					focusTemp =(HBox) child.getNode();
 				}
 			}
-			//c.flatten();
-			
-			if (list.get(0)!= focusedExpression) System.out.println("ok so whys it broken");
-			//c.updateNode();
+			System.out.println("Focus temp "+focusTemp.getLayoutX());
 			_pane.getChildren().add(c.getNode());
 			c.getNode().setLayoutX(WINDOW_WIDTH/4);
-//			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
+			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
 			//c.getNode().setOpacity(0);
 			
-			Bounds focusb = focusTemp.localToScene(focusTemp.getBoundsInLocal());
+			Bounds focusb = c.getNode().getBoundsInParent();//focusTemp.localToScene(focusTemp.getBoundsInLocal());
 			double focusCenter = focusb.getMinX()+(focusb.getMaxX()-focusb.getMinX())/2;
 			System.out.println(focusedExpression);
-			Bounds focusbe = focusedExpression.getNode().localToScene(focusedExpression.getNode().getBoundsInLocal());
-			double focusCentere = focusbe.getMinX()+(focusbe.getMaxX()-focusbe.getMinX())/2;
-			System.out.println("HEEEYEYEYEYE " + focusCentere);
+			//System.out.println("HEEEYEYEYEYE " + focusCentere);
 			
 			System.out.println("Focus Center: " +focusCenter);
 			
-			Bounds copyb = copied.getNode().localToScene(copied.getNode().getBoundsInLocal());
+			Bounds copyb = copied.getNode().localToScene(copied.getNode().getBoundsInParent());
 			double copyCenter = copyb.getMinX()+(copyb.getMaxX()-copyb.getMinX())/2;
-			System.out.println("Copy Center " + copyCenter);
-			
-			double temp = Math.abs(focusCenter-copyCenter);
+			//System.out.println("Copy Center " + copyCenter);
+			System.out.println("get layout "+focusTemp.localToScene(focusTemp.getLayoutX(), focusTemp.getLayoutY()).getX());
+			double temp = Math.abs(focusCenter-mouseX);
 			System.out.println(temp);
-			_pane.getChildren().remove(c.getNode());
+			//_pane.getChildren().remove(c.getNode());
 			return temp;
 		}
 		
@@ -205,7 +208,7 @@ public class ExpressionEditor extends Application {
 				List<List<Expression>> possiblePermutations = 
 						getPossiblePermutations(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren(), focusedExpression);
 				
-				List<Expression> closestXiList = getClosestXi(copy, focusedExpression.getParent(), possiblePermutations, event.getX());
+				List<Expression> closestXiList = getClosestXi(copy, focusedExpression.getParent(), possiblePermutations, newX);
 				((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().clear();
 				((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().addAll(closestXiList);
 				refreshPane();
