@@ -79,28 +79,30 @@ public class ExpressionEditor extends Application {
 			temp.addAll(inList);
 			list.add(temp);
 			System.out.println("Focused in heerya" + movingItem);
-			while(currentIndex > 0) { //permutations to the left of the moving item
-				currentIndex--;
+			while(currentIndex < inList.size()-1) { //permutations to the right of the moving item
+				currentIndex++;
 				switchElements(temp, movingItem, temp.get(currentIndex));
 				list.add(temp);
 			}
 			temp.clear();
+			System.out.println(temp);
 			temp.addAll(inList);
 			currentIndex = inList.indexOf(movingItem);
-			while(currentIndex < inList.size()-1) { //permutations to the right of the moving item
-				currentIndex++;
+			
+			while(currentIndex > 0) { //permutations to the left of the moving item
+				currentIndex--;
 				switchElements(temp, movingItem, temp.get(currentIndex));
 				list.add(temp);
 			}
 			return list;
 		}
 		
-		private List<Expression> getClosestXi(Expression copied, Expression focused, List<List<Expression>> list) {
+		private List<Expression> getClosestXi(Expression copied, Expression focused, List<List<Expression>> list, double mouseX) {
 			int indexOfSmallestXi = -1;
-			double smallestXi = -1;
+			double smallestXi = Double.MAX_VALUE;
 			for (int i = 0; i < list.size(); i++) {
-				double temp = calculateXi(copied, (CompoundExpression) focused, list.get(i));
-				if (temp < smallestXi || smallestXi == -1) {
+				double temp = calculateXi(copied, (CompoundExpression) focused, list.get(i), mouseX);
+				if (temp < smallestXi) {
 					smallestXi = temp;
 					indexOfSmallestXi = i;
 				}
@@ -109,33 +111,44 @@ public class ExpressionEditor extends Application {
 				
 		}
 		
-		private double calculateXi(Expression copied, CompoundExpression focused, List<Expression> list) {
+		private double calculateXi(Expression copied, CompoundExpression focused, List<Expression> list, double mouseX) {
 			SimpleCompoundExpression c = (SimpleCompoundExpression) focused.deepCopy();
 			c.getChildren().clear();
-			Expression focusTemp = null;
+			HBox focusTemp = null;
 			System.out.println("AY focus" + focused);
 			if (!list.contains(focused))System.out.println("whelp");
+			System.out.println(list);
 			for (int i = 0; i < list.size(); i++) {
-				SimpleCompoundExpression t = new SimpleCompoundExpression(((SimpleCompoundExpression) list.get(i)).getName());
-				c.addSubexpression(list.get(i).deepCopy());
-				if (list.get(i) == focused) {
-					focusTemp = t;
+				SimpleCompoundExpression child = (SimpleCompoundExpression) list.get(i).deepCopy();
+				((HBox) c.getNode()).getChildren().add(child.getNode());
+				if (list.get(i) == focusedExpression) {
+					focusTemp = (HBox) child.getNode();
 				}
 			}
-			c.flatten();
+			//c.flatten();
+			
+			
 			c.updateNode();
 			_pane.getChildren().add(c.getNode());
-			c.getNode().setLayoutX(focused.getParent().getNode().getLayoutX());
-			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
+//			c.getNode().setLayoutX(WINDOW_WIDTH/4);
+//			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
 			//c.getNode().setOpacity(0);
 			
-			Bounds focusb = focusTemp.getNode().localToScene(focusTemp.getNode().getBoundsInLocal());
+			Bounds focusb = focusTemp.localToScene(focusTemp.getBoundsInLocal());
 			double focusCenter = focusb.getMinX()+(focusb.getMaxX()-focusb.getMinX())/2;
-			System.out.println(focusCenter);
+		
+			Bounds focusbe = focusedExpression.getNode().localToScene(focusedExpression.getNode().getBoundsInLocal());
+			double focusCentere = focusbe.getMinX()+(focusbe.getMaxX()-focusbe.getMinX())/2;
+			System.out.println("HEEEYEYEYEYE " + focusCentere);
+			System.out.println(focusedExpression);
+			System.out.println("Focus Center: " +focusCenter);
+			
 			Bounds copyb = copied.getNode().localToScene(copied.getNode().getBoundsInLocal());
 			double copyCenter = copyb.getMinX()+(copyb.getMaxX()-copyb.getMinX())/2;
-			System.out.println(copyCenter);
-			double temp = Math.abs(focusCenter-copyCenter);
+			System.out.println("Copy Center " + copyCenter);
+			
+			double temp = Math.abs(focusCenter-mouseX);
+			System.out.println(temp);
 			//_pane.getChildren().remove(c.getNode());
 			return temp;
 		}
@@ -186,7 +199,7 @@ public class ExpressionEditor extends Application {
 				List<List<Expression>> possiblePermutations = 
 						getPossiblePermutations(((SimpleCompoundExpression) focusedExpression.getParent()).getChildren(), focusedExpression);
 				
-				List<Expression> closestXiList = getClosestXi(copy, focusedExpression, possiblePermutations);
+				List<Expression> closestXiList = getClosestXi(copy, focusedExpression.getParent(), possiblePermutations, event.getX());
 				((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().clear();
 				((SimpleCompoundExpression) focusedExpression.getParent()).getChildren().addAll(closestXiList);
 				refreshPane();
