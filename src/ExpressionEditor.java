@@ -78,26 +78,31 @@ public class ExpressionEditor extends Application {
 			List<T> temp = new ArrayList<T>();
 			temp.addAll(inList);
 			list.add(temp);
-			System.out.println("Focused in heerya" + movingItem);
+			//System.out.println("Focused in heerya" + movingItem);
 			while(currentIndex < inList.size()-1) { //permutations to the right of the moving item
+				List<T> temp2 = new ArrayList<T>();
 				currentIndex++;
-				switchElements(temp, movingItem, temp.get(currentIndex));
-				list.add(temp);
+				switchElements(temp, movingItem, inList.get(currentIndex));
+				temp2.addAll(temp);
+				list.add(temp2);
 			}
 			temp.clear();
-			System.out.println(temp);
+			//System.out.println(temp);
 			temp.addAll(inList);
 			currentIndex = inList.indexOf(movingItem);
 			
 			while(currentIndex > 0) { //permutations to the left of the moving item
+				List<T> temp2 = new ArrayList<T>();
 				currentIndex--;
 				switchElements(temp, movingItem, temp.get(currentIndex));
-				list.add(temp);
+				temp2.addAll(temp);
+				list.add(temp2);
 			}
 			return list;
 		}
 		
 		private List<Expression> getClosestXi(Expression copied, Expression focused, List<List<Expression>> list, double mouseX) {
+			System.out.println(list);
 			int indexOfSmallestXi = -1;
 			double smallestXi = Double.MAX_VALUE;
 			for (int i = 0; i < list.size(); i++) {
@@ -115,41 +120,42 @@ public class ExpressionEditor extends Application {
 			SimpleCompoundExpression c = (SimpleCompoundExpression) focused.deepCopy();
 			c.getChildren().clear();
 			HBox focusTemp = null;
-			System.out.println("AY focus" + focused);
-			if (!list.contains(focused))System.out.println("whelp");
-			System.out.println(list);
+			//System.out.println("AY focus" + focused);
+			//if (!list.contains(focused))System.out.println("whelp");
+			//System.out.println(list);
 			for (int i = 0; i < list.size(); i++) {
 				SimpleCompoundExpression child = (SimpleCompoundExpression) list.get(i).deepCopy();
 				((HBox) c.getNode()).getChildren().add(child.getNode());
 				if (list.get(i) == focusedExpression) {
+					System.out.println("FOcus index"+i);
 					focusTemp = (HBox) child.getNode();
 				}
 			}
 			//c.flatten();
 			
-			
-			c.updateNode();
+			if (list.get(0)!= focusedExpression) System.out.println("ok so whys it broken");
+			//c.updateNode();
 			_pane.getChildren().add(c.getNode());
-//			c.getNode().setLayoutX(WINDOW_WIDTH/4);
+			c.getNode().setLayoutX(WINDOW_WIDTH/4);
 //			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
 			//c.getNode().setOpacity(0);
 			
 			Bounds focusb = focusTemp.localToScene(focusTemp.getBoundsInLocal());
 			double focusCenter = focusb.getMinX()+(focusb.getMaxX()-focusb.getMinX())/2;
-		
+			System.out.println(focusedExpression);
 			Bounds focusbe = focusedExpression.getNode().localToScene(focusedExpression.getNode().getBoundsInLocal());
 			double focusCentere = focusbe.getMinX()+(focusbe.getMaxX()-focusbe.getMinX())/2;
 			System.out.println("HEEEYEYEYEYE " + focusCentere);
-			System.out.println(focusedExpression);
+			
 			System.out.println("Focus Center: " +focusCenter);
 			
 			Bounds copyb = copied.getNode().localToScene(copied.getNode().getBoundsInLocal());
 			double copyCenter = copyb.getMinX()+(copyb.getMaxX()-copyb.getMinX())/2;
 			System.out.println("Copy Center " + copyCenter);
 			
-			double temp = Math.abs(focusCenter-mouseX);
+			double temp = Math.abs(focusCenter-copyCenter);
 			System.out.println(temp);
-			//_pane.getChildren().remove(c.getNode());
+			_pane.getChildren().remove(c.getNode());
 			return temp;
 		}
 		
