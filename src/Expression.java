@@ -56,13 +56,18 @@ interface Expression {
 	void flatten ();
 
 	/**
-	 * Creates a String representation by recursively printing out (using indentation) the
-	 * tree represented by this expression, starting at the specified indentation level.
+	 * Helper method for convertToString(int).
 	 * @param stringBuilder the StringBuilder to use for building the String representation
 	 * @param indentLevel the indentation level (number of tabs from the left margin) at which to start
 	 */	
 	void convertToString (StringBuilder stringBuilder, int indentLevel);
-
+	
+	/**
+	 * Creates a String representation by recursively printing out (using indentation) the
+	 * tree represented by this expression, starting at the specified indentation level.
+	 * @param indentLevel the indentation level at which to start
+	 * @return the string
+	 */
 	public default String convertToString (int indentLevel) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		convertToString(stringBuilder, indentLevel);
@@ -72,8 +77,8 @@ interface Expression {
 	/**
 	 * Static helper method to indent a specified number of times from the left margin, by
 	 * appending tab characters to the specified StringBuilder.
-	 * @param sb the StringBuilder to which to append tab characters.
-	 * @param indentLevel the number of tabs to append.
+	 * @param sb the StringBuilder to which to append tab characters
+	 * @param indentLevel the number of tabs to append
 	 */
 	public static void indent (StringBuilder stringBuilder, int indentLevel) {
 		for (int i = 0; i < indentLevel; i++) {
