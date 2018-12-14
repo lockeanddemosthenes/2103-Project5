@@ -78,6 +78,7 @@ public class ExpressionEditor extends Application {
 			List<T> temp = new ArrayList<T>();
 			temp.addAll(inList);
 			list.add(temp);
+			System.out.println("Focused in heerya" + movingItem);
 			while(currentIndex > 0) { //permutations to the left of the moving item
 				currentIndex--;
 				switchElements(temp, movingItem, temp.get(currentIndex));
@@ -112,26 +113,30 @@ public class ExpressionEditor extends Application {
 			SimpleCompoundExpression c = (SimpleCompoundExpression) focused.deepCopy();
 			c.getChildren().clear();
 			Expression focusTemp = null;
+			System.out.println("AY focus" + focused);
+			if (!list.contains(focused))System.out.println("whelp");
 			for (int i = 0; i < list.size(); i++) {
 				SimpleCompoundExpression t = new SimpleCompoundExpression(((SimpleCompoundExpression) list.get(i)).getName());
-				c.addSubexpression(new SimpleCompoundExpression(((SimpleCompoundExpression) list.get(i)).getName()));
+				c.addSubexpression(list.get(i).deepCopy());
 				if (list.get(i) == focused) {
 					focusTemp = t;
 				}
 			}
+			c.flatten();
 			c.updateNode();
 			_pane.getChildren().add(c.getNode());
-			c.getNode().setLayoutX(focused.getNode().getLayoutX());
-			c.getNode().setLayoutY(WINDOW_HEIGHT*5);
-			c.getNode().setOpacity(0);
+			c.getNode().setLayoutX(focused.getParent().getNode().getLayoutX());
+			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
+			//c.getNode().setOpacity(0);
 			
-			Bounds focusb = focusTemp.getNode().getBoundsInLocal();
+			Bounds focusb = focusTemp.getNode().localToScene(focusTemp.getNode().getBoundsInLocal());
 			double focusCenter = focusb.getMinX()+(focusb.getMaxX()-focusb.getMinX())/2;
-			
-			Bounds copyb = copied.getNode().getBoundsInLocal();
+			System.out.println(focusCenter);
+			Bounds copyb = copied.getNode().localToScene(copied.getNode().getBoundsInLocal());
 			double copyCenter = copyb.getMinX()+(copyb.getMaxX()-copyb.getMinX())/2;
+			System.out.println(copyCenter);
 			double temp = Math.abs(focusCenter-copyCenter);
-			_pane.getChildren().remove(c.getNode());
+			//_pane.getChildren().remove(c.getNode());
 			return temp;
 		}
 		
