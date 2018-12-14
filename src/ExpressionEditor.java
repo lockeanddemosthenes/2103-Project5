@@ -33,7 +33,9 @@ public class ExpressionEditor extends Application {
 	public static void main (String[] args) {
 		launch(args);
 	}
+	
 	private static Expression copy = null;
+	
 	/**
 	 * Mouse event handler for the entire pane that constitutes the ExpressionEditor
 	 */
@@ -43,13 +45,21 @@ public class ExpressionEditor extends Application {
 		private static CompoundExpression focusedExpression = null;
 		private static MouseEvent ogEvent = null;
 		
-		
+		/**
+		 * Mouse event handler initiator
+		 * @param pane_ 
+		 * @param rootExpression_ 
+		 */
 		public MouseEventHandler (Pane pane_, CompoundExpression rootExpression_) {
 			_pane = pane_;
 			_rootExpression = rootExpression_;
 			if (focusedExpression == null) focusedExpression = _rootExpression;
 		}
 		
+		/**
+		 * Resets the font style for the node.
+		 * @param node the node with the font style being reset
+		 */
 		private void clearStyle(Node node) {
 			if (node instanceof Text || node instanceof Label) return;
 			((HBox) node).setBorder(null);
@@ -58,11 +68,17 @@ public class ExpressionEditor extends Application {
 			}
 		}
 		
+		/**
+		 * Resets the focus to an inner node.
+		 */
 		private void resetFocus() {
 			clearStyle(_rootExpression.getNode());
 			focusedExpression = _rootExpression;
 		}
 		
+		/**
+		 * Updates the pane.
+		 */
 		private void refreshPane() {
 			((SimpleCompoundExpression) _rootExpression).updateNode();
 			_pane.getChildren().clear();
@@ -72,6 +88,12 @@ public class ExpressionEditor extends Application {
 			_rootExpression.getNode().setLayoutY(WINDOW_HEIGHT/2);
 		}
 		
+		/**
+		 * Helper method to find the possible permutations when moving a node.
+		 * @param inList the list of the nodes generated from the expression
+		 * @param movingItem the node being moved
+		 * @return the list containing the possible permutations
+		 */
 		private <T> List<List<T>> getPossiblePermutations(List<T> inList, T movingItem){
 			List<List<T>> list = new ArrayList<List<T>>();
 			int currentIndex = inList.indexOf(movingItem);
@@ -101,6 +123,14 @@ public class ExpressionEditor extends Application {
 			return list;
 		}
 		
+		/**
+		 * Retrieves the 
+		 * @param copied section of expression
+		 * @param focused current focused expression
+		 * @param list the list of expression nodes
+		 * @param mouseX X coordinate of the mouse
+		 * @return the index of the smallest Xi
+		 */
 		private List<Expression> getClosestXi(Expression copied, Expression focused, List<List<Expression>> list, double mouseX) {
 			System.out.println(list);
 			int indexOfSmallestXi = -1;
@@ -119,6 +149,14 @@ public class ExpressionEditor extends Application {
 				
 		}
 		
+		/**
+		 * Helper expression for getClosestXi
+		 * @param copied section of expression
+		 * @param focused current focused expression
+		 * @param list the list of expression nodes
+		 * @param mouseX X coordinate of the mouse
+		 * @return calculated value of Xi
+		 */
 		private double calculateXi(Expression copied, CompoundExpression focused, List<Expression> list, double mouseX) {
 			SimpleCompoundExpression c = (SimpleCompoundExpression) focused.deepCopy();
 			c.getChildren().clear();
@@ -145,7 +183,9 @@ public class ExpressionEditor extends Application {
 			c.getNode().setLayoutY(WINDOW_HEIGHT/3);
 			//c.getNode().setOpacity(0);
 			
-			Bounds focusb = c.getNode().getBoundsInParent();//focusTemp.localToScene(focusTemp.getBoundsInLocal());
+			//focusTemp has the same absolute bounds for each permutation 
+			//THIS IS THE ERROR WITH THE DRAG AND DROP IF THIS WORKED THE FEATURE WOULD BE FINE
+			Bounds focusb = focusTemp.getBoundsInParent();//focusTemp.localToScene(focusTemp.getBoundsInLocal());
 			double focusCenter = focusb.getMinX()+(focusb.getMaxX()-focusb.getMinX())/2;
 			System.out.println(focusedExpression);
 			//System.out.println("HEEEYEYEYEYE " + focusCentere);
@@ -162,6 +202,9 @@ public class ExpressionEditor extends Application {
 			return temp;
 		}
 		
+		/**
+		 * Mouse event handler
+		 */
 		public void handle (MouseEvent event) {
 			if (event.getEventType() == MouseEvent.MOUSE_PRESSED) {
 				List<Expression> children = ((SimpleCompoundExpression) focusedExpression).getChildren();
