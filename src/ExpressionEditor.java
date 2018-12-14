@@ -85,6 +85,7 @@ public class ExpressionEditor extends Application {
 			}
 			temp.clear();
 			temp.addAll(inList);
+			currentIndex = inList.indexOf(movingItem);
 			while(currentIndex < inList.size()-1) { //permutations to the right of the moving item
 				currentIndex++;
 				switchElements(temp, movingItem, temp.get(currentIndex));
